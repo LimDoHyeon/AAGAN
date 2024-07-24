@@ -86,9 +86,9 @@ class Generator(nn.Module):
     def remove_weight_norm(self):
         print('Removing weight norm...')
         for l in self.ups:
-            remove_weight_norm(l)
+            remove_weight_norm(l)  # torch.nn.utils.remove_weight_norm
         for l in self.resblocks:
-            l.remove_weight_norm()
+            l.remove_weight_norm()  # Recursive call
         remove_weight_norm(self.conv_pre)
         remove_weight_norm(self.conv_post)
 
@@ -139,8 +139,8 @@ class Discriminator(nn.Module):
     def remove_weight_norm(self):
         print('Removing weight norm...')
         for l in self.downs:
-            remove_weight_norm(l)
+            remove_weight_norm(l)  # torch.nn.utils.remove_weight_norm
         for l in self.resblocks:
-            l.remove_weight_norm()
+            l.remove_weight_norm()  # Recursive call
         remove_weight_norm(self.conv_pre)
         remove_weight_norm(self.conv_post)
