@@ -29,7 +29,7 @@ def extract_pitch(y, sr, n_fft=2048, hop_length=512):
 
     pitch = np.array(pitch)
     pitch = np.nan_to_num(pitch)
-    # pitch = pad_to_length(pitch, target_rows)  # Ensure the row count matches
+    # pitch = pad_to_length(pitch, target_data_rows)  # Ensure the row count matches
     pitch_df = pd.DataFrame(pitch, columns=['Pitch'])
     return pitch_df
 
@@ -40,8 +40,8 @@ def extract_f0_pyworld(y, sr, frame_period=512 / 44100 * 1000):
     f0 = pw.stonemask(y, _f0, t, sr)  # Refine the F0 estimation using the StoneMask algorithm
 
     # Convert to a DataFrame and ensure the row count matches
-    # f0 = pad_to_length(f0, target_rows)
-    # times = pad_to_length(t, target_rows)
+    # f0 = pad_to_length(f0, target_data_rows)
+    # times = pad_to_length(t, target_data_rows)
     f0_df = pd.DataFrame(f0, columns=['F0'])
     return f0_df
 
