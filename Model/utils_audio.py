@@ -37,13 +37,13 @@ def align_from_distances(distance_matrix, debug=False):
     return results
 
 
-def DTW_align(input, target):
-    for j in range(len(input)):
-        dists = torch.cdist(torch.transpose(input[j], 1, 0), torch.transpose(target[j], 1, 0))
+def DTW_align(input_data, target_data):
+    for j in range(len(input_data)):
+        dists = torch.cdist(torch.transpose(input_data[j], 1, 0), torch.transpose(target_data[j], 1, 0))
         alignment = align_from_distances(dists.T.cpu().detach().numpy())
-        input[j, :, :] = input[j, :, alignment]
+        input_data[j, :, :] = input_data[j, :, alignment]
 
-    return input
+    return input_data
 
 
 class RMSELoss(nn.Module):
@@ -98,7 +98,7 @@ def save_checkpoint(state, best_point, save_path, filename):
         torch.save(state, os.path.join(save_path, 'BEST_' + filename))
 
 
-def perform_STT(wave, model_STT, decoder_STT, gt_label, mini_batch=2):
+def perform_STT(wave, model_STT, decoder_STT, g_label, mini_batch=2):
     # model STT
     emission = []
     with torch.inference_mode():
@@ -115,7 +115,7 @@ def perform_STT(wave, model_STT, decoder_STT, gt_label, mini_batch=2):
         transcript = decoder_STT(emission_recon[j])
         transcripts.append(transcript)
 
-    #     if transcript == gt_label[j]:
+    #     if transcript == g_label[j]:
     #         corr_num = corr_num + 1
 
     # acc_word = corr_num / len(wave)
