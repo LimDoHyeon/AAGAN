@@ -96,28 +96,3 @@ def save_checkpoint(state, best_point, save_path, filename):
     # If this checkpoint is the best so far, store a copy so that it doesn't get overwritten by a worse checkpoint
     if best_point:
         torch.save(state, os.path.join(save_path, 'BEST_' + filename))
-
-
-def perform_STT(wave, model_STT, decoder_STT, g_label, mini_batch=2):
-    # model STT
-    emission = []
-    with torch.inference_mode():
-        for j in range(len(wave) // mini_batch):
-            em_, _ = model_STT(wave[mini_batch * j:mini_batch * j + mini_batch])
-            emission.append(em_.cpu().detach().numpy())
-    emission_recon = torch.Tensor(np.array(emission)).cuda()
-    emission_recon = torch.reshape(emission_recon, (len(wave), emission_recon.shape[-2], emission_recon.shape[-1]))
-
-    # decoder STT
-    transcripts = []
-    # corr_num=0
-    for j in range(len(wave)):
-        transcript = decoder_STT(emission_recon[j])
-        transcripts.append(transcript)
-
-    #     if transcript == g_label[j]:
-    #         corr_num = corr_num + 1
-
-    # acc_word = corr_num / len(wave)
-
-    return transcripts  # , emission_recon, acc_word
